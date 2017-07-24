@@ -1,9 +1,12 @@
 package LibPckage;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Users 
+public class Users implements Serializable
 {
+
+	private static final long serialVersionUID = 1L;
 	int id;
 	String name;
 	public ArrayList<Items> itemList = new ArrayList<Items>();
@@ -22,8 +25,16 @@ public class Users
 	public String getName() {
 		return name;
 	}
-
 	
+	public void setName(String n)
+	{
+		name = n;
+	}
 	
+	public String print()
+	{
+		String s = " " + id + " " + name + " "; 
+		return s;
+	}
 
 }

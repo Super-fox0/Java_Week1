@@ -1,8 +1,11 @@
 package LibPckage;
 
-public class Magazines extends Items
+import java.io.Serializable;
+
+public class Magazines extends Items implements Serializable
 {
 
+	private static final long serialVersionUID = 1L;
 	int issue;
 
 	public Magazines(String s, String t, int i) 

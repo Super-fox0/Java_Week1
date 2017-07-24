@@ -1,10 +1,17 @@
 package LibPckage;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Library implements Interface
+public class Library implements Interface, Serializable
 {
-	
+
+	private static final long serialVersionUID = 1L;
 	public ArrayList<Items> database = new ArrayList<Items>();
 	public ArrayList<Users> userList = new ArrayList<Users>();
 	
@@ -16,21 +23,47 @@ public class Library implements Interface
 		l.addItem("BOOK", "BOOK1", true);
 		l.addItem("MAPS", "MAP1", "LONDON");
 		l.print();
+		l.registerPerson(1, "John");
+		l.updatePerson(1, "NEWJOHN");
 		
+		l.checkoutItem(0, 0);
+		l.checkinItem(0, 0);
+		
+		l.writeToFile(l);
+		l.readFromFile();
 		
 	}
 
 	@Override
-	public void checkoutItem() 
+	public void checkoutItem(int userIndex, int itemId) 
 	{
-
+		Users u = userList.get(userIndex);
 		
+		for (Items x : database)
+		{
+			if(x.id == itemId)
+			{
+				u.itemList.add(x);
+				System.out.println("Item checked out " + x.getName() + " By User: " + u.id + " " +u.getName());
+			}
+		}
 	}
 
 	@Override
-	public void checkinItem() 
+	public void checkinItem(int userIndex, int itemId) 
 	{
-
+		Users u = userList.get(userIndex);
+		//System.out.println(u.itemList.toString());
+		
+		for (Items x : database)
+		{
+			if(x.id == itemId)
+			{
+				u.itemList.remove(x);
+				System.out.println("Item checked in " + x.getName() + " By User: " + u.id + " " +u.getName());
+				//System.out.println(u.itemList.toString());
+			}
+		}
 		
 	}
 
@@ -110,11 +143,90 @@ public class Library implements Interface
 	}
 
 	@Override
-	public void updatePerson() 
+	public void updatePerson(int i, String name) //select user by ID - update name
 	{
 
+		for(Users u : userList)
+		{
+			//System.out.println(u.print());
+			u.getId();
+			if(u.getId() == i)
+			{
+				u.setName(name);
+				//System.out.println("Name Updated" + userList.get(0).print());
+			}
+		}
 		
 	}
 	
+	public void writeToFile(Library l)
+	{
+		FileOutputStream fout = null;
+		ObjectOutputStream oos = null;
 
+		try 
+		{
+			fout = new FileOutputStream("c:\\test\\libraryTest.txt");
+			oos = new ObjectOutputStream(fout);
+			oos.writeObject(l);
+			System.out.println("Library wrote to file");
+		} 
+		
+		catch (Exception ex) 
+		{
+			ex.printStackTrace();
+		} 
+		
+		finally 
+		{
+			if (fout != null) 
+			{
+				try 
+				{
+					fout.close();
+				} 
+				catch (IOException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+
+			if (oos != null) 
+			{
+				try 
+				{
+					oos.close();
+				} 
+				catch (IOException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public void readFromFile() 
+	{
+		Library l = new Library();
+		
+		try
+		{
+			FileInputStream fis = new FileInputStream("c:\\test\\libraryTest.txt");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			 l = (Library) ois.readObject();
+			 ois.close();
+		} 
+		catch (IOException | ClassNotFoundException e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			System.out.println("Library read from file");
+			l.print();		
+		}
+	}
+
+	
+	
 }

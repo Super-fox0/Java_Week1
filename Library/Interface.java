@@ -3,12 +3,7 @@ package LibPckage;
 public interface Interface 
 {
 
-	public void checkoutItem();
 	
-	public void checkinItem();
-		
-	public void updatePerson();
-
 	void removeItem(int i);
 
 	void addItem(String type, String name, boolean fic);
@@ -22,5 +17,11 @@ public interface Interface
 	void deletePerson(int id, String name);
 
 	void updateItem(int i, String nam, String newName);
+
+	void updatePerson(int i, String name);
+
+	void checkoutItem(int userIndex, int itemId);
+
+	void checkinItem(int userIndex, int itemId);
 	
 }

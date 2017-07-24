@@ -1,8 +1,11 @@
 package LibPckage;
 
-public class Maps extends Items
+import java.io.Serializable;
+
+public class Maps extends Items implements Serializable
 {
-	
+
+	private static final long serialVersionUID = 1L;
 	String location;
 
 	public Maps(String s, String t, String location) {

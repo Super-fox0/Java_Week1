@@ -1,7 +1,11 @@
 package LibPckage;
 
-public abstract class Items 
+import java.io.Serializable;
+
+public abstract class Items implements Serializable
 {
+
+	private static final long serialVersionUID = 1L;
 	static int staticId = 0;
 	public int id = 0;
 	public String type;
@@ -21,4 +25,8 @@ public abstract class Items
 		name = x;
 	}
 	
+	public String getName()
+	{
+		return name;
+	}
 }
