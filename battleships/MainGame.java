@@ -16,7 +16,7 @@ public class MainGame
 	
 	int lives = 0;
 	boolean hit = false;
-	static boolean gameOver = false;
+	boolean gameOver = false;
 
 	
 	public static void main(String[] args)
@@ -25,62 +25,92 @@ public class MainGame
 		MainGame p1 = new MainGame();
 		MainGame p2 = new MainGame();
 		
-		p1.initGame(5);
-		p1.resetBoard();
 		
-		p2.initGame(5);
-		p2.resetBoard();
 		
 		Scanner scan = new Scanner(System.in);
+		System.out.println("Enter board Size: ");
+		int s = scan.nextInt();
 		
+		p1.initGame(s);
+		p1.resetBoard();
 		
+		p2.initGame(s);
+		p2.resetBoard();
 		
-		//p1 needs to populate
-		//p2 needs to populate
-		System.out.println();
-		p1.populateBoard(2, "horizontal", 0, 1);
-		p1.printBoard();
+			
+		String dir;
+		int xpos;
+		int ypos;
 		
-		System.out.println();
-		p1.populateBoard(2, "verticle", 3, 3);
-		p1.printBoard();
-		
-		
-		System.out.println();
-		p2.populateBoard(3, "horizontal", 0, 4);
-		p2.printBoard();
-		
-		System.out.println();
-		p2.populateBoard(3, "verticle", 4, 4);
-		p2.printBoard();
-		
-		//take turns if hit is true
+		System.out.println("Player 1 populate your board - direction, x, y");
+		System.out.println("place your carrier");
 
+		//p1 populate
+		System.out.println("direction:");
+		dir = p1.inputS();
+		System.out.println("x:");
+		xpos = p1.input();
+		System.out.println("y:");
+		ypos = p1.input();
+		p1.populateBoard(5, dir, xpos, ypos);  //fix board population with scanner input for both players
+		p1.printBoard();
+//		System.out.println("place your destroyer");
+//		p1.populateBoard(4, scan.next(), scan.nextInt(), scan.nextInt());
+//		System.out.println("Player 1 ship posistions");
+//		p1.printBoard();
+			
+		System.out.println();
+
+		//p2 populate
+		p2.populateBoard(3, "horizontal", 0, 4);
+		p2.populateBoard(3, "verticle", 4, 4);
+		System.out.println("Player 2 ship posistions");
+		p2.printBoard();
 		
-		do
-		{
+	
+		//while loop for turns
+		while(p1.gameOver == false && p2.gameOver == false)
+		{  //game over has issues- find them
+						
+			System.out.println("Player 2 turn:");
 			p1.shoot(scan.nextInt(), scan.nextInt());
 			p1.printBoard();
-			p1.checkGameOverLives();
-//			if(p1.hit == true)
-//			{
-//				p1.shootAgain(scan.nextInt(), scan.nextInt());			
-//			}
-
+			if(p1.hit == true)
+			{
+				System.out.println("player 1 board");
+				p1.printBoard();
+				p1.shootAgain();		
+			}
 			
-//			p2.shoot(1, 1);
-//			if(p2.hit == true)
-//			{
-//				p2.shootAgain(1, 2);
-//			}
-
+			System.out.println("Player 1 turn:");
+			p2.shoot(scan.nextInt(), scan.nextInt());
+			p2.printBoard();
+			if(p2.hit == true)
+			{
+				System.out.println("player 2 board");
+				p1.printBoard();
+				p2.shootAgain();
+			}
 			
+			System.out.println("p1 lives: " + p1.lives);
+			System.out.println("p2 lives: " + p2.lives);
+					
 		}
-		while(gameOver == false);
-		
-
-		
-		
+					
+	}
+	
+	public int input()
+	{
+		Scanner sc = new Scanner(System.in);
+		int x = sc.nextInt();
+		return x;
+	}
+	
+	public String inputS()
+	{
+		Scanner sc = new Scanner(System.in);
+		String x = sc.nextLine();
+		return x;
 	}
 	
 	public void printBoard() // works
@@ -118,7 +148,7 @@ public class MainGame
 	{ // Y is left, X is right
 		xcoord = x;
 		ycoord = y;
-		lives = lives + shipSize;
+		lives = lives + shipSize;  // alter how lives work when scanner is implemnted in main - won't have variable lives but a set 20 based on all ships
 	 // int size = shipSize;
 		
 		if(collisionCheck(y, x, shipSize, direction) == false)
@@ -202,27 +232,31 @@ public class MainGame
 	
 	public void shoot(int x, int y) // works
 	{
-
 		if(gameBoard[y][x] == "#")
 		{
 			gameBoard[y][x] = "*";
 			lives = lives -1;
 			hit = true;
+			System.out.println("HIT! take another turn");
+			checkGameOverLives();
 		}
 		else
 		{
 			gameBoard[y][x] = "M";
 			hit = false;
-			//miss
-			//p2 turn
+			System.out.println("MISS!");
+			System.out.println();
 		}
 	}
 	
-	public void shootAgain(int x, int y) // fucked
+	public void shootAgain() // fucked
 	{
 		while(hit == true)
 		{
-			shoot(x, y);
+			int coordx= input();
+			int coordy = input();
+			
+			shoot(coordx, coordy);
 			printBoard();
 		}
 	}
@@ -252,9 +286,6 @@ public class MainGame
 		if(lives == 0)
 		{
 			gameOver = true;
-		}
-		if(gameOver == true)
-		{
 			System.out.println("Game Over");
 		}
 		return gameOver;
@@ -263,30 +294,3 @@ public class MainGame
 }
 
 
-//two boards per player
-//1 populated
-//1 blank
-//
-//players take turns shooting
-//if hit they get another rurn
-//
-//if they miss it's next players turn
-//
-//cycle through this till a gameover is reached
-//
-//gameover is decided by lives - specific to player
-//
-//
-//shooting method needs to act upon other players board - need to change it
-//
-//
-//main operation is held within a loop
-//
-//p1.shoot
-//
-//do(
-//if hit == true, p1.shoot
-//if hit == false, p2.shoot
-//
-//if hit == true, then p2.shoot
-//while gameover == false
